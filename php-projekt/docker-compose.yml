@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  barta-php8.0:
+    image: barta-php8.0:dev
+    container_name: martin-barta-php8.0
+    build:
+      context: ./docker
+      target: barta-php8.0
+      dockerfile: ./Dockerfile.dev
+    ports:
+      - "82:80"
+    volumes:
+      - .:/var/www
+      - ./docker/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/apache.ports.conf:/etc/apache2/ports.conf
+      - ./docker/apache.vhost.conf:/etc/apache2/sites-enabled/vhost.conf
+  mysqldb:
+    image: mariadb:latest
+    ports:
+      - 3307:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=test
+    volumes:
+      - ./data/database:/var/lib/mysql
+      - ./docker/mysql/mariadb.cnf:/etc/mysql/mariadb.cnf
+
+  adminer:
+    image: adminer
+    ports:
+      - 83:8080
